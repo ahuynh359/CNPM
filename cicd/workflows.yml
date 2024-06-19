@@ -1,0 +1,22 @@
+name: CI/CD
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@main
+      - name: Create .env
+        run: |
+          echo 'MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}' >> .env
+          echo 'MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}' >> .env
+          echo 'MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}' >> .env
+          echo 'MYSQL_USER=${{ secrets.MYSQL_USER }}' >> .env
+          echo 'WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}' >> .env
+          echo 'WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}' >> .env
+          echo 'WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}' >> .env
+      - name: Build Docker
+        run: docker compose up --build -d
